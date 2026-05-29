@@ -1,0 +1,81 @@
+SELECT * FROM `sample - superstore`
+LIMIT 10;
+DESCRIBE `sample - superstore`;
+
+-- total sales and profit 
+SELECT SUM(sales) AS Total_sales, SUM(profit) AS Total_profit
+FROM  `sample - superstore`;
+
+-- Category wise sales and profit
+SELECT category, SUM(sales) AS Total_sales, SUM(profit) AS Total_profit
+FROM `sample - superstore`
+GROUP BY category
+ORDER BY total_sales DESC;
+
+-- Top 10 customers
+SELECT `customer name`, SUM(sales) AS Total_sales, SUM(profit) AS Total_profit
+FROM `sample - superstore`
+GROUP BY `customer name`
+ORDER BY Total_sales DESC
+LIMIT 10;
+
+-- highest profit states
+SELECT state, SUM(sales) AS Total_sales, SUM(profit) AS Total_profit
+FROM `sample - superstore`
+GROUP BY state
+ORDER BY Total_profit DESC
+LIMIT 10;
+
+-- loss making products
+SELECT `product name`, SUM(sales) AS Total_sales, SUM(profit) AS Total_profit
+FROM `sample - superstore`
+GROUP BY  `product name`
+HAVING SUM(profit)<0
+ORDER BY Total_profit ASC;
+
+-- region wise performance
+SELECT Region, SUM(sales) AS Total_sales, SUM(profit) AS Total_profit, COUNT(*) AS total_orders
+FROM `sample - superstore`
+GROUP BY region
+ORDER BY Total_profit DESC;
+
+-- monthly sales trend
+SELECT YEAR(`order date`) AS order_year, MONTH(`order date`) AS order_month, SUM(sales) AS Total_sales, SUM(profit) AS Total_profit
+FROM `sample - superstore`
+GROUP BY YEAR(`Order Date`), MONTH(`order date`)
+ORDER BY order_year, order_month;
+
+-- create view from top customers
+SELECT `customer name`,  SUM(sales) AS Total_sales, SUM(profit) AS Total_profit
+FROM `sample - superstore`
+GROUP BY `customer name`;
+SELECT * FROM top_customers
+LIMIT 10;
+
+-- subquery
+SELECT * FROM (
+SELECT `Product Name`, SUM(Sales) AS Total_Sales, SUM(Profit) AS Total_Profit
+FROM `sample - superstore`
+GROUP BY `Product Name`
+) AS product_summary
+ORDER BY Total_Profit DESC
+LIMIT 5;
+
+-- case state
+
+SELECT Category, SUM(Sales) AS Total_Sales, CASE
+WHEN SUM(Sales) > 500000 THEN 'High Sales'
+WHEN SUM(Sales) > 200000 THEN 'Medium Sales'
+ELSE 'Low Sales'
+END AS Sales_Status
+FROM `sample - superstore`
+GROUP BY Category;
+
+-- ranking customers
+SELECT `Customer Name`, SUM(Sales) AS Total_Sales, RANK() OVER (ORDER BY SUM(Sales) DESC) AS Customer_Rank
+FROM `sample - superstore`
+GROUP BY `Customer Name`;
+
+
+
+
